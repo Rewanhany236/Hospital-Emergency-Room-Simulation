@@ -10,7 +10,9 @@ public class Semaphore {
         if (value < 0) {
             try{
                 wait();
-            }catch(InterruptedException e) {}
+            }catch(InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
     public synchronized void v() {
@@ -20,8 +22,8 @@ public class Semaphore {
         }
     }
 
-    public synchronized boolean tryAcquire(int time) {
-        long deadline = System.currentTimeMillis();
+    public synchronized boolean tryAcquire(long time) {
+        long deadline = System.currentTimeMillis()+ time;
         long remaining = time;
         value--;
         while (value<0){
@@ -33,7 +35,10 @@ public class Semaphore {
             try {
                 wait(remaining);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                value++;
+                notify();
+                Thread.currentThread().interrupt();
+                return false;
             }
             remaining = deadline - System.currentTimeMillis();
         }
