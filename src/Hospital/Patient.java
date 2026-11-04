@@ -9,7 +9,7 @@ public class Patient  implements Runnable {
      }
      @Override
     public void run(){
-         System.out.println("p" + id + "arrived.");
+         System.out.println("p" + id + " arrived.");
          waitingRoom.put(this);
     }
 }
